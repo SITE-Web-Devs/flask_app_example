@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Checkerboard Assignment</title>
+    <style type="text/css">
+      canvas { display: block; }
+
+      .overlay {
+        background-color: rgba(0, 0, 0, 0.75);
+        color: #fff;
+        margin: 2em;
+        padding: 1em 2em;
+        position: absolute;
+        z-index: 1;
+
+        a { color: #08f; }
+      }
+    </style>
+
+  </head>
+  <body>
+    <div class="overlay">
+      <h1> My Checkerboard Assignment</h1>
+      <p> Made using binary operators :) change the last two params in the url to resize</p>
+    </div>
+    <script type="text/javascript">
+      var canvas = document.createElement('canvas'),
+    	ctx = canvas.getContext('2d');
+
+      function initialize() {
+        document.body.appendChild(canvas);
+
+        resizeHandler();
+        window.addEventListener('resize', resizeHandler, false);
+      }
+
+      function resizeHandler() {
+        canvas.height = window.innerHeight;
+        canvas.width = window.innerWidth;
+
+        canvas.style.height = {{some_height}} + 'px';
+        canvas.style.width = {{some_width}} + 'px';
+
+        draw();
+      }
+
+      function draw() {
+        var i, x, y, r, g, b, imgdata,
+            grid = 512;
+
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        imgdata = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+        for(i = 0; i < imgdata.data.length; i += 4) {
+        	  x = (i / 4) % canvas.width % grid;
+      	    y = Math.floor((i / 4) / canvas.width) % grid;
+
+        	  r = (~x ^ y) * 0.5 + 0x88;
+      	    g = (x ^ y) * 0.5 + 0x11;
+      	    b = (x ^ y) * 0.5 + 0x33;
+
+        	  r += Math.random() * 0x08;
+      	    g += Math.random() * 0x11;
+      	    b += Math.random() * 0x22;
+
+        	  imgdata.data[i] = r;
+      	    imgdata.data[i + 1] = g;
+      	    imgdata.data[i + 2] = b;
+      	    imgdata.data[i + 3] = 0xFF;
+        }
+
+        ctx.putImageData(imgdata, 0, 0);
+      }
+
+      setTimeout(function() {
+        initialize();
+      }, 1);
+    </script>
+  </body>
+</html>
